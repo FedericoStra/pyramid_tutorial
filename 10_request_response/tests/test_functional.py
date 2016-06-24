@@ -11,12 +11,15 @@ class TutorialFunctionalTests(unittest.TestCase):
         self.testapp = TestApp(app)
 
     def test_home(self):
-        res = self.testapp.get('/', status=200)
-        self.assertIn(b'Hi Home view', res.body)
+        res = self.testapp.get('/', status=302)
 
-    def test_hello(self):
-        res = self.testapp.get('/howdy', status=200)
-        self.assertIn(b'Hi Hello view', res.body)
+    def test_plain_without_name(self):
+        res = self.testapp.get('/plain', status=200)
+        self.assertIn(b'No name provided', res.body)
+
+    def test_plain_with_name(self):
+        res = self.testapp.get('/plain?name=John Doe', status=200)
+        self.assertIn(b'John Doe', res.body)
 
 
 if __name__ == "__main__":

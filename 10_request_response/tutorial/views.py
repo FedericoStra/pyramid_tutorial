@@ -1,15 +1,21 @@
-from pyramid.view import view_config, view_defaults
+from pyramid.httpexceptions import HTTPFound
+from pyramid.response import Response
+from pyramid.view import view_config
 
 
-@view_defaults(renderer='home.pt')
 class TutorialViews:
     def __init__(self, request):
         self.request = request
 
     @view_config(route_name='home')
     def home(self):
-        return {'name': 'Home view'}
+        return HTTPFound(location='/plain')
 
-    @view_config(route_name='hello')
-    def hello(self):
-        return {'name': 'Hello view'}
+    @view_config(route_name='plain')
+    def plain(self):
+        name = self.request.params.get('name', 'No name provided')
+
+        body = """
+        URL {url} with name: {name}
+        """.format(url=self.request.url, name=name)
+        return Response(content_type='text/plain', body=body)

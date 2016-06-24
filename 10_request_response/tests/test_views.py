@@ -16,16 +16,17 @@ class TutorialViewTests(unittest.TestCase):
         inst = TutorialViews(request)
         response = inst.home()
 
-        self.assertEqual("Home view", response['name'])
+        self.assertEqual(response.status, '302 Found')
 
     def test_hello(self):
         from tutorial.views import TutorialViews
 
         request = testing.DummyRequest()
+        request.GET['name'] = 'John Doe'
         inst = TutorialViews(request)
-        response = inst.hello()
+        response = inst.plain()
 
-        self.assertEqual("Hello view", response['name'])
+        self.assertIn(b'John Doe', response.body)
 
 
 if __name__ == "__main__":
